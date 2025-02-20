@@ -26,6 +26,10 @@ screen.addEventListener('mousemove', mouseMoveEvent)
 screen.addEventListener('mouseup', mouseUpEvent)
 document.querySelector('.clear').addEventListener('click', clearScream)
 
+screen.addEventListener('touchstart', touchStartEvent);
+screen.addEventListener('touchmove', touchMoveEvent);
+screen.addEventListener('touchend', touchEndEvent);
+
 lineWidth.addEventListener('input', function () {
     if (this.value > 10) {
         this.value = 10;
@@ -68,7 +72,7 @@ function mouseDownEvent(event) {
     mouseY = event.pageY - rect.top
 }
 function mouseMoveEvent(event) {
-    let rect = screen.getBoundingClientRect()
+    
     if (canvaDraw) {
         draw(event.pageX, event.pageY)
     }
@@ -100,4 +104,25 @@ function clearScream() {
     context.setTransform(1, 0, 0, 1, 0, 0);
 
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+}
+
+function touchStartEvent(event) {
+    event.preventDefault(); // Evita rolagem da tela ao desenhar
+    canvaDraw = true;
+    let rect = screen.getBoundingClientRect();
+    let touch = event.touches[0]; // Pega o primeiro toque
+    mouseX = touch.pageX - rect.left;
+    mouseY = touch.pageY - rect.top;
+}
+
+function touchMoveEvent(event) {
+    event.preventDefault(); // Evita rolagem da tela ao desenhar
+    if (canvaDraw) {
+        let touch = event.touches[0];
+        draw(touch.pageX, touch.pageY);
+    }
+}
+
+function touchEndEvent() {
+    canvaDraw = false;
 }
